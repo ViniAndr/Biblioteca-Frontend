@@ -1,5 +1,5 @@
 //components
-import PrimaryButton from "../PrimaryButton";
+import Button from "../Button";
 import CardItem from "./CardItem";
 
 //icons
@@ -40,7 +40,7 @@ export default function SectionAboutReading() {
       </div>
 
       <div className="text-center">
-        <PrimaryButton text="Comece sua jornada literária hoje!" to="/livros" />
+        <Button text="Comece sua jornada literária hoje!" to="/livros" />
       </div>
     </section>
   );

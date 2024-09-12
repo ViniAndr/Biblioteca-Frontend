@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 
 //componets
-import PrimaryButton from "../components/PrimaryButton";
+import Button from "../components/Button";
 import ShowPasswordToggle from "../components/ShowPasswordToggle";
 import Input from "../components/Input";
 import Alert from "../components/Alert";
@@ -66,36 +66,39 @@ export default function Login() {
         <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: "", type: "" })} />
       )}
 
-      <div className="max-w-[27rem] m-auto shadow  rounded-md p-8">
-        <h1 className="font-bold text-3xl">Entrar</h1>
-        <p className="my-4 text-zinc-500">Preencha os campos abaixo para poder entrar na sua conta:</p>
+      <div className="max-w-[27rem] m-auto mt-8 md:mt-16 rounded-lg border shadow-sm p-8">
+        <div className="flex flex-col space-y-1.5 mb-6">
+          <h1 className="font-bold text-3xl">Entrar</h1>
+          <p className="text-zinc-500">Preencha os campos abaixo para poder entrar na sua conta:</p>
+        </div>
+        <div>
+          <form className="flex flex-col gap-3" onSubmit={handleLogin}>
+            <Input
+              label="Email"
+              type="email"
+              placeholder="Email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={errors.email}
+            />
+            <Input
+              id={"input-password"}
+              label="Senha"
+              type="password"
+              placeholder="Senha"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={errors.password}
+            />
 
-        <form className="flex flex-col gap-3" onSubmit={handleLogin}>
-          <Input
-            label="Email"
-            type="email"
-            placeholder="Email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            error={errors.email}
-          />
-          <Input
-            id={"input-password"}
-            label="Senha"
-            type="password"
-            placeholder="Senha"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            error={errors.password}
-          />
+            {/* Mostrar senha */}
+            <ShowPasswordToggle inputId="input-password" />
 
-          {/* Mostrar senha */}
-          <ShowPasswordToggle inputId="input-password" />
-
-          <PrimaryButton text={loading ? "Processando..." : "Entrar"} disabled={loading} />
-        </form>
+            <Button size="full" text={loading ? "Processando..." : "Entrar"} disabled={loading} />
+          </form>
+        </div>
         <hr className="my-6" />
         <p className="text-zinc-500">
           Ainda não tem uma conta?{" "}

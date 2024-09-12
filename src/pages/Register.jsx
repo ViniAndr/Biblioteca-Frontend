@@ -4,7 +4,7 @@ import { useState } from "react";
 import Alert from "../components/Alert";
 import PhoneVerificationForm from "../components/register/PhoneVerificationForm";
 import CompleteRegistrationForm from "../components/register/CompleteRegistrationForm";
-import PrimaryButton from "../components/PrimaryButton";
+import Button from "../components/Button";
 
 // Services
 import { handleCreateClient, createFullClient } from "../services/auth";
@@ -129,22 +129,7 @@ export default function Register() {
           }, 5000);
         }
       } else {
-        // Cadastrar o cliente com todos os dados
-        const clientData = {
-          nome: formData.name,
-          sobrenome: formData.lastName,
-          email: formData.email,
-          senha: formData.password,
-          telefone: formData.phone,
-          logradouro: formData.street,
-          numero: formData.number,
-          bairro: formData.neighborhood,
-          cidade: formData.city,
-          estado: formData.state,
-          cep: formData.cep,
-        };
-
-        response = await createFullClient(clientData);
+        response = await createFullClient(formData);
         if (response?.error) {
           setAlert({ message: response.message, type: "error" });
         } else {
@@ -165,24 +150,30 @@ export default function Register() {
       {alert.message && (
         <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: "", type: "" })} />
       )}
-      <div className={`m-auto shadow rounded-md p-8 ${step == 1 ? "w-96" : "w-96 lg:w-auto"}`}>
-        <h1 className="font-bold text-3xl">{step === 1 ? "Verificar Telefone" : "Cadastrar"}</h1>
-        <p className="my-4 text-zinc-500">
-          {step === 1
-            ? "Preencha os campos abaixo para podermos verificar se você já tem o cadastro presencial:"
-            : "Preencha os campos abaixo para completar o seu cadastro:"}
-        </p>
-        <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-          {step === 1 ? (
-            <PhoneVerificationForm formData={formData} errors={errors} handleInputChange={handleInputChange} />
-          ) : (
-            <CompleteRegistrationForm formData={formData} errors={errors} handleInputChange={handleInputChange} />
-          )}
-          <PrimaryButton
-            text={loading ? "Processando..." : step === 1 ? "Verificar" : "Cadastrar"}
-            disabled={loading}
-          />
-        </form>
+      <div className="mx-auto my-8 md:my-16 container flex justify-center">
+        <div className={`rounded-lg border shadow-sm p-6 ${step == 1 ? "w-96" : "w-full max-w-xl"}`}>
+          {/* Textos */}
+          <div className="flex flex-col space-y-1.5 mb-6">
+            <h1 className="text-3xl font-bold">{step === 1 ? "Verificar Telefone" : "Cadastrar"}</h1>
+            <p className="text-zinc-500">
+              {step === 1
+                ? "Preencha os campos abaixo para podermos verificar se você já tem o cadastro presencial:"
+                : "Preencha os campos abaixo para completar o seu cadastro:"}
+            </p>
+          </div>
+
+          {/* Formulario */}
+          <div>
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              {step === 1 ? (
+                <PhoneVerificationForm formData={formData} errors={errors} handleInputChange={handleInputChange} />
+              ) : (
+                <CompleteRegistrationForm formData={formData} errors={errors} handleInputChange={handleInputChange} />
+              )}
+              <Button text={loading ? "Processando..." : step === 1 ? "Verificar" : "Cadastrar"} disabled={loading} />
+            </form>
+          </div>
+        </div>
       </div>
     </>
   );

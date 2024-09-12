@@ -1,20 +1,33 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
 
 // components
-import PrimaryButton from "../components/PrimaryButton";
+import Button from "../components/Button";
 
 export default function Header() {
   // Estado para verificar se o usuário está autenticado
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Verifica se o token existe no localStorage
+  // Função para verificar se o token é válido (não expirado)
+  const isTokenValid = (token) => {
+    try {
+      const decodedToken = jwtDecode(token); // Decodifica o token
+      const currentTime = Date.now() / 1000; // Obtém o tempo atual em segundos
+      return decodedToken.exp > currentTime; // Verifica se o token ainda não expirou
+    } catch (error) {
+      return false; // Se houver algum erro na decodificação, trata o token como inválido
+    }
+  };
+
+  // Verifica se o token existe no localStorage e se é válido
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true); // Usuário autenticado se o token existir
+    if (token && isTokenValid(token)) {
+      setIsAuthenticated(true); // Usuário autenticado se o token existir e for válido
     } else {
-      setIsAuthenticated(false); // Usuário não autenticado se não houver token
+      setIsAuthenticated(false); // Usuário não autenticado se o token não for válido ou não existir
+      localStorage.removeItem("token"); // Remove o token inválido, se houver
     }
   }, []);
 
@@ -32,11 +45,18 @@ export default function Header() {
           Biblioteca
         </Link>
 
-        {isAuthenticated ? (
-          <PrimaryButton text="Sair" onClick={handleLogout} />
-        ) : (
-          <PrimaryButton text="Entrar" to="/login" />
-        )}
+        <div>
+          {isAuthenticated ? (
+            <>
+              <Link to="/perfil/cliente" className="mr-4">
+                Meu Perfil
+              </Link>
+              <Button text="Sair" onClick={handleLogout} />
+            </>
+          ) : (
+            <Button text="Entrar" to="/login" />
+          )}
+        </div>
       </div>
     </header>
   );

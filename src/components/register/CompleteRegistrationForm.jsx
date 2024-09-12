@@ -3,45 +3,45 @@ import ShowPasswordToggle from "../ShowPasswordToggle";
 
 export default function CompleteRegistrationForm({ formData, errors, handleInputChange }) {
   return (
-    <div className="flex flex-wrap gap-3">
-      {/* Coluna 01 */}
-      <div className="w-96 flex flex-col gap-3">
-        <div className="flex gap-3">
-          <Input
-            key="name"
-            type="text"
-            placeholder="Nome"
-            name="name"
-            id="input-name"
-            value={formData.name}
-            onChange={handleInputChange}
-            error={errors.name}
-            label="Nome" // Adicionando acessibilidade
-          />
-          <Input
-            key="lastName"
-            type="text"
-            placeholder="Sobrenome"
-            name="lastName"
-            id="input-lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            error={errors.lastName}
-            label="Sobrenome" // Adicionando acessibilidade
-          />
-        </div>
+    <div className="flex flex-col gap-3">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Input
-          key="email"
-          type="email"
-          placeholder="E-mail"
-          name="email"
-          id="input-email"
-          value={formData.email}
+          key="name"
+          type="text"
+          placeholder="Nome"
+          name="name"
+          id="input-name"
+          value={formData.name}
           onChange={handleInputChange}
-          error={errors.email}
-          label="E-mail" // Adicionando acessibilidade
+          error={errors.name}
+          label="Nome"
         />
+        <Input
+          key="lastName"
+          type="text"
+          placeholder="Sobrenome"
+          name="lastName"
+          id="input-lastName"
+          value={formData.lastName}
+          onChange={handleInputChange}
+          error={errors.lastName}
+          label="Sobrenome"
+        />
+      </div>
 
+      <Input
+        key="email"
+        type="email"
+        placeholder="E-mail"
+        name="email"
+        id="input-email"
+        value={formData.email}
+        onChange={handleInputChange}
+        error={errors.email}
+        label="E-mail"
+      />
+
+      <div class="grid grid-cols-1 gap-2 md:gap-4 md:grid-cols-2">
         <Input
           key="password"
           id="input-password"
@@ -51,71 +51,72 @@ export default function CompleteRegistrationForm({ formData, errors, handleInput
           value={formData.password}
           onChange={handleInputChange}
           error={errors.password}
-          label="Senha" // Adicionando acessibilidade
+          label="Senha"
         />
-        <ShowPasswordToggle inputId="input-password" />
-
-        <Input
-          key="phone"
-          type="tel"
-          placeholder="Telefone"
-          name="phone"
-          id="input-phone"
-          value={formData.phone}
-          onChange={handleInputChange}
-          error={errors.phone}
-          label="Telefone" // Adicionando acessibilidade
-        />
+        <div className="md:flex md:items-end md:py-2">
+          <ShowPasswordToggle inputId="input-password" />
+        </div>
       </div>
 
-      {/* Coluna 02 */}
-      <div className="w-96 flex flex-col gap-3">
-        <div className="flex gap-3">
-          <Input
-            key="street"
-            type="text"
-            placeholder="Rua"
-            name="street"
-            id="input-street"
-            value={formData.street}
-            onChange={handleInputChange}
-            error={errors.street}
-            label="Rua" // Adicionando acessibilidade
-          />
-          <Input
-            key="number"
-            type="text"
-            placeholder="Número"
-            name="number"
-            id="input-number"
-            value={formData.number}
-            onChange={handleInputChange}
-            error={errors.number}
-            label="Número" // Adicionando acessibilidade
-          />
-        </div>
+      <Input
+        key="phone"
+        type="tel"
+        placeholder="Telefone"
+        name="phone"
+        id="input-phone"
+        value={formData.phone}
+        onChange={handleInputChange}
+        error={errors.phone}
+        label="Telefone"
+      />
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Input
-          key="neighborhood"
+          key="street"
           type="text"
-          placeholder="Bairro"
-          name="neighborhood"
-          id="input-neighborhood"
-          value={formData.neighborhood}
+          placeholder="Rua"
+          name="street"
+          id="input-street"
+          value={formData.street}
           onChange={handleInputChange}
-          error={errors.neighborhood}
-          label="Bairro" // Adicionando acessibilidade
+          error={errors.street}
+          label="Rua"
         />
         <Input
-          key="city"
+          key="number"
           type="text"
-          placeholder="Cidade"
-          name="city"
-          id="input-city"
-          value={formData.city}
+          placeholder="Número"
+          name="number"
+          id="input-number"
+          value={formData.number}
           onChange={handleInputChange}
-          error={errors.city}
-          label="Cidade" // Adicionando acessibilidade
+          error={errors.number}
+          label="Número"
         />
+      </div>
+      <Input
+        key="neighborhood"
+        type="text"
+        placeholder="Bairro"
+        name="neighborhood"
+        id="input-neighborhood"
+        value={formData.neighborhood}
+        onChange={handleInputChange}
+        error={errors.neighborhood}
+        label="Bairro"
+      />
+      <Input
+        key="city"
+        type="text"
+        placeholder="Cidade"
+        name="city"
+        id="input-city"
+        value={formData.city}
+        onChange={handleInputChange}
+        error={errors.city}
+        label="Cidade"
+      />
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Input
           key="state"
           type="text"
@@ -125,7 +126,7 @@ export default function CompleteRegistrationForm({ formData, errors, handleInput
           value={formData.state}
           onChange={handleInputChange}
           error={errors.state}
-          label="Estado" // Adicionando acessibilidade
+          label="Estado"
         />
         <Input
           key="cep"
@@ -136,7 +137,7 @@ export default function CompleteRegistrationForm({ formData, errors, handleInput
           value={formData.cep}
           onChange={handleInputChange}
           error={errors.cep}
-          label="CEP" // Adicionando acessibilidade
+          label="CEP"
         />
       </div>
     </div>

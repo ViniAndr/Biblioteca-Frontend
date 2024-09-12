@@ -13,7 +13,7 @@ export default function PhoneVerificationForm({ formData, errors, handleInputCha
         value={formData.email}
         onChange={handleInputChange}
         error={errors.email}
-        label="Email" // Adicionando acessibilidade
+        label="Email"
       />
       <Input
         key="password"
@@ -24,7 +24,7 @@ export default function PhoneVerificationForm({ formData, errors, handleInputCha
         value={formData.password}
         onChange={handleInputChange}
         error={errors.password}
-        label="Senha" // Adicionando acessibilidade
+        label="Senha"
       />
       <ShowPasswordToggle inputId="input-password" />
       <Input
@@ -36,7 +36,7 @@ export default function PhoneVerificationForm({ formData, errors, handleInputCha
         value={formData.phone}
         onChange={handleInputChange}
         error={errors.phone}
-        label="Telefone" // Adicionando acessibilidade
+        label="Telefone"
       />
     </>
   );
