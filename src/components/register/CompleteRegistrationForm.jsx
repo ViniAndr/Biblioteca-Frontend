@@ -1,5 +1,5 @@
-import Input from "../Input";
-import ShowPasswordToggle from "../ShowPasswordToggle";
+import Input from "../forms/Input";
+import ShowPasswordToggle from "../forms/ShowPasswordToggle";
 
 export default function CompleteRegistrationForm({ formData, errors, handleInputChange }) {
   return (

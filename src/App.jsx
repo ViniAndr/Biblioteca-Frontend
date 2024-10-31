@@ -1,53 +1,106 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-// Components
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import PublicRoute from "./components/PublicRoute";
-import PrivateRoute from "./components/PrivateRoute";
+// Context
+import { AuthProvider } from "./contexts/AuthContext";
+
+// Layouts
+import DefaultLayout from "./layouts/DefaultLayout";
+import NoLayout from "./layouts/NoLayout";
+
+// Components (Rotas Protegidas)
+import PublicRoute from "./components/routes/PublicRoute";
+import PrivateRoute from "./components/routes/PrivateRoute";
 
 // Pages
 import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ProfileClient from "./pages/ProfileClient";
+import PageNotFound from "./pages/PageNotFound";
+import ClientLogin from "./pages/auth/ClientLogin";
+import AdminLogin from "./pages/auth/EmployeeAdminLogin";
+import Register from "./pages/auth/Register";
+import ProfileClient from "./pages/profile/ProfileClient";
+import Dashboard from "./pages/dashboard/Dashboard";
 
 function App() {
   return (
     <BrowserRouter>
-      <div className="flex flex-col min-h-screen">
-        <Header />
-        <div className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/perfil/cliente"
-              element={
-                <PrivateRoute>
-                  <ProfileClient /> {/* Apenas usuários logados podem acessar */}
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/login"
-              element={
-                <PublicRoute>
-                  <Login />
-                </PublicRoute>
-              }
-            />
-            <Route
-              path="/cadastro"
-              element={
-                <PublicRoute>
+      <AuthProvider>
+        <Routes>
+          {/* Página inicial, acessível a todos */}
+          <Route
+            path="/"
+            element={
+              <DefaultLayout>
+                <Home />
+              </DefaultLayout>
+            }
+          />
+
+          {/* Rotas públicas - Login e Registro (somente para usuários não autenticados) */}
+          <Route
+            path="/login/client"
+            element={
+              <PublicRoute>
+                <DefaultLayout>
+                  <ClientLogin />
+                </DefaultLayout>
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/login/admin"
+            element={
+              <PublicRoute>
+                <DefaultLayout>
+                  <AdminLogin />
+                </DefaultLayout>
+              </PublicRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <DefaultLayout>
                   <Register />
-                </PublicRoute>
-              }
-            />
-          </Routes>
-        </div>
-        <Footer />
-      </div>
+                </DefaultLayout>
+              </PublicRoute>
+            }
+          />
+
+          {/* Rotas privadas - Acessíveis apenas para usuários autenticados */}
+          <Route
+            path="/profile/client"
+            element={
+              <PrivateRoute allowedRoles={["cliente"]}>
+                <DefaultLayout>
+                  <ProfileClient />
+                </DefaultLayout>
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/employee"
+            element={
+              <PrivateRoute allowedRoles={["funcionario"]}>
+                <NoLayout>
+                  <Dashboard />
+                </NoLayout>
+              </PrivateRoute>
+            }
+          />
+
+          {/* Página 404 sem Header e Footer */}
+          <Route
+            path="*"
+            element={
+              <NoLayout>
+                <PageNotFound />
+              </NoLayout>
+            }
+          />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 
-import Input from "../components/Input";
-import PrimaryButton from "../components/Button";
-import ExpandableSection from "../components/ExpandableSection";
-import TableHead from "../components/TableHead";
-import TableRow from "../components/TableRow";
-import Alert from "../components/Alert";
+import Input from "../../components/forms/Input";
+import PrimaryButton from "../../components/common/Button";
+import ExpandableSection from "../../components/common/ExpandableSection";
+import TableHead from "../../components/tables/TableHead";
+import TableRowLoan from "../../components/tables/TableRowLoan";
+import Alert from "../../components/common/Alert";
 
-import { getClientProfile, getClientLoans, updateClientProfile, updateClientAddress } from "../services/client";
+import { getClientProfile, getClientLoans, updateClientProfile, updateClientAddress } from "../../services/client";
 
 export default function ProfileClient() {
   const columns = ["Nome do Livro", "Data de Solicitação", "Data de Devolução", "Status", ""];
@@ -215,7 +215,7 @@ export default function ProfileClient() {
                 {/* Corpo da Tabela */}
                 <tbody className="bg-white divide-y divide-gray-200">
                   {loanHistory.map((loan) => (
-                    <TableRow key={loan.id} loan={loan} updateLoanStatus={updateLoanStatus} />
+                    <TableRowLoan key={loan.id} loan={loan} updateLoanStatus={updateLoanStatus} />
                   ))}
                 </tbody>
               </table>

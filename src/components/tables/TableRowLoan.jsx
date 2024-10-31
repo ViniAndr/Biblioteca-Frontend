@@ -1,9 +1,16 @@
-import Badge from "./Badge";
-import Button from "./Button";
+// Context
+import { useAuth } from "../../contexts/AuthContext";
 
-import { cancelLoan } from "../services/client";
+// Components
+import Badge from "../common/Badge";
+import Button from "../common/Button";
+
+// Service
+import { cancelLoan } from "../../services/client";
 
 const TableRow = ({ loan, updateLoanStatus }) => {
+  const { user } = useAuth();
+
   const data = {
     id: loan.id,
     book: loan.livro.titulo,
@@ -41,12 +48,17 @@ const TableRow = ({ loan, updateLoanStatus }) => {
     }
   }
 
+  const clientName = () => {
+    return `${loan.cliente.nome} ${loan.cliente.sobrenome}`;
+  };
+
   return (
     <tr>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{data.book}</td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{data.requestDate}</td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{data.returnDate}</td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+      {user.role !== "cliente" && <td className="px-6 py-4 whitespace-nowrap text-sm text-center">{clientName()}</td>}
+      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-center">{data.book}</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{data.requestDate}</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">{data.returnDate}</td>
+      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
         <Badge color={badgeColor()}>{data.status}</Badge>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

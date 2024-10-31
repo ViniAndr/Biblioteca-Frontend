@@ -58,3 +58,15 @@ export const updateClientAddress = async (data) => {
     return { error: true, message: "Erro inesperado. Por favor, tente novamente." };
   }
 };
+
+export const getAllClients = async (params, page) => {
+  let urlBase = page ? `client/all?page=${page}` : "client/all";
+  if (params && params.nome) urlBase += `&nome=${params.nome}`;
+
+  try {
+    const response = await api.get(urlBase);
+    return { error: false, data: response.data };
+  } catch (error) {
+    return { error: true, message: "Erro inesperado. Por favor, tente novamente." };
+  }
+};

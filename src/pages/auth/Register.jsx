@@ -1,19 +1,24 @@
 import { useState } from "react";
 
+//context
+import { useAuth } from "../../contexts/AuthContext";
+
 // Components
-import Alert from "../components/Alert";
-import PhoneVerificationForm from "../components/register/PhoneVerificationForm";
-import CompleteRegistrationForm from "../components/register/CompleteRegistrationForm";
-import Button from "../components/Button";
+import Alert from "../../components/common/Alert";
+import PhoneVerificationForm from "../../components/register/PhoneVerificationForm";
+import CompleteRegistrationForm from "../../components/register/CompleteRegistrationForm";
+import Button from "../../components/common/Button";
 
 // Services
-import { handleCreateClient, createFullClient } from "../services/auth";
+import { handleCreateClient, createFullClient } from "../../services/auth";
 
 // Utils
-import { validateEmail, validatePassword, validatePhone, validateRequiredField } from "../utils/validations";
-import { formatPhone, formatCep } from "../utils/formatters";
+import { validateEmail, validatePassword, validatePhone, validateRequiredField } from "../../utils/validations";
+import { formatPhone, formatCep } from "../../utils/formatters";
 
 export default function Register() {
+  const { login } = useAuth();
+
   // Estado para gerenciar o passo atual do formulário (1: Verificação de Telefone, 2: Cadastro Completo)
   const [step, setStep] = useState(1);
   // Estado para exibir mensagens de alerta
@@ -24,7 +29,7 @@ export default function Register() {
   // Estado para armazenar os dados do formulário
   const [formData, setFormData] = useState({
     name: "",
-    lastname: "",
+    lastName: "",
     email: "",
     password: "",
     phone: "",
@@ -129,7 +134,7 @@ export default function Register() {
           }, 5000);
         }
       } else {
-        response = await createFullClient(formData);
+        response = await createFullClient(formData, login);
         if (response?.error) {
           setAlert({ message: response.message, type: "error" });
         } else {
@@ -138,7 +143,6 @@ export default function Register() {
         }
       }
     } catch {
-      // Mensagem de erro para falha inesperada
       setAlert({ message: "Erro inesperado. Por favor, tente novamente.", type: "error" });
     } finally {
       setLoading(false);

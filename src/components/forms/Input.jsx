@@ -1,13 +1,11 @@
 export default function Input({ id, type = "text", error, label, ...props }) {
   return (
     <div>
-      <label htmlFor={id} className="font-medium leading-none">
+      <label htmlFor={id} className="font-medium leading-none mb-1">
         {label}
       </label>
       <input
-        className={`h-10 w-full mt-1 rounded-md border px-3 py-2 text-sm ${
-          error ? "border-red-500" : "border-grey-300"
-        }`}
+        className={`h-10 w-full rounded-md border px-3 py-2 text-sm ${error ? "border-red-500" : "border-grey-300"}`}
         id={id}
         type={type}
         {...props}

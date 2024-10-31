@@ -1,19 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-//componets
-import Button from "../components/Button";
-import ShowPasswordToggle from "../components/ShowPasswordToggle";
-import Input from "../components/Input";
-import Alert from "../components/Alert";
+//context
+import { useAuth } from "../../contexts/AuthContext";
 
-//API
-import { login } from "../services/auth";
+// Components
+import Button from "../common/Button";
+import Alert from "../common/Alert";
+import ShowPasswordToggle from "./ShowPasswordToggle";
+import Input from "./Input";
 
-//Utils
-import { validateEmail, validatePassword } from "../utils/validations";
+// Utils
+import { validateEmail, validatePassword } from "../../utils/validations";
 
-export default function Login() {
+const FormLogin = ({ type, loginApi }) => {
+  const { login } = useAuth();
+
   const [alert, setAlert] = useState({ message: "", type: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -21,35 +23,42 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  function clearErrorsInputs() {
-    setTimeout(() => {
-      setErrors({});
-    }, 3000);
-  }
+  const navigate = useNavigate(); // Para redirecionamento
+
+  // Limpa erros quando o formulário é enviado novamente
+  const clearErrorsInputs = () => {
+    setErrors({});
+  };
+
+  // Funções de evento separadas
+  const handleEmailChange = (e) => setEmail(e.target.value);
+  const handlePasswordChange = (e) => setPassword(e.target.value);
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    // Limpar erros ao tentar submeter
+    clearErrorsInputs();
+
     // Validação dos campos
-    const fieldesValidators = {
+    const fieldValidators = {
       email: validateEmail(email),
       password: validatePassword(password),
     };
 
-    if (Object.values(fieldesValidators).some((error) => error)) {
-      setErrors(fieldesValidators);
-      clearErrorsInputs();
+    if (Object.values(fieldValidators).some((error) => error)) {
+      setErrors(fieldValidators);
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await login(email, password);
+      const response = await loginApi(email, password, login);
       if (!response.error) {
         setAlert({ message: response.message, type: "success" });
-        // Redirecionar para a home para o header atualizar
-        window.location.href = "/";
+        // Redirecionar para a página principal após sucesso
+        navigate("/");
       } else {
         setAlert({ message: response.message, type: "error" });
       }
@@ -68,8 +77,10 @@ export default function Login() {
 
       <div className="max-w-[27rem] m-auto mt-8 md:mt-16 rounded-lg border shadow-sm p-8">
         <div className="flex flex-col space-y-1.5 mb-6">
-          <h1 className="font-bold text-3xl">Entrar</h1>
-          <p className="text-zinc-500">Preencha os campos abaixo para poder entrar na sua conta:</p>
+          <h1 className="font-bold text-3xl">{type === "admin" ? "Acesso Restrito" : "Entrar"}</h1>
+          <p className="text-zinc-500">
+            {type !== "admin" && "Preencha os campos abaixo para poder entrar na sua conta:"}
+          </p>
         </div>
         <div>
           <form className="flex flex-col gap-3" onSubmit={handleLogin}>
@@ -79,17 +90,17 @@ export default function Login() {
               placeholder="Email"
               name="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               error={errors.email}
             />
             <Input
-              id={"input-password"}
+              id="input-password"
               label="Senha"
               type="password"
               placeholder="Senha"
               name="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
               error={errors.password}
             />
 
@@ -99,14 +110,20 @@ export default function Login() {
             <Button size="full" text={loading ? "Processando..." : "Entrar"} disabled={loading} />
           </form>
         </div>
-        <hr className="my-6" />
-        <p className="text-zinc-500">
-          Ainda não tem uma conta?{" "}
-          <Link to="/cadastro" className="text-blue-700">
-            Clique aqui
-          </Link>
-        </p>
+        {type !== "admin" && (
+          <>
+            <hr className="my-6" />
+            <p className="text-zinc-500">
+              Ainda não tem uma conta?{" "}
+              <Link to="/register" className="text-blue-700">
+                Clique aqui
+              </Link>
+            </p>
+          </>
+        )}
       </div>
     </>
   );
-}
+};
+
+export default FormLogin;

@@ -1,5 +1,5 @@
-import ShowPasswordToggle from "../ShowPasswordToggle";
-import Input from "../Input";
+import ShowPasswordToggle from "../forms/ShowPasswordToggle";
+import Input from "../forms/Input";
 
 export default function PhoneVerificationForm({ formData, errors, handleInputChange }) {
   return (

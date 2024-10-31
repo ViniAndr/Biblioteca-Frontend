@@ -1,5 +1,5 @@
 //components
-import Button from "../Button";
+import Button from "../common/Button";
 import CardItem from "./CardItem";
 
 //icons

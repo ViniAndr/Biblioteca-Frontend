@@ -21,7 +21,7 @@ const Alert = ({ message, type, onClose }) => {
       className={`fixed inset-x-0 top-28 mx-auto max-w-xl w-full p-4 border-l-4 rounded shadow-lg ${alertStyles[type]} flex justify-between items-center`}
     >
       <span>{message}</span>
-      <button onClick={onClose} className="text-lg font-bold">
+      <button onClick={onClose} className="text-lg font-bold p-2">
         &times;
       </button>
     </div>
