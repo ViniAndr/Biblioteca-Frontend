@@ -1,15 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+// Componentes
 import TableHead from "../tables/TableHead";
-import TableBody from "../tables/TableBody"; // Importando o TableBody com tbody
+import TableBody from "../tables/TableBody";
 import Pagination from "../common/Pagination";
 import FiltersBar from "../common/FiltersBar";
 import Alert from "../common/Alert";
+import BookModal from "../modals/BookModal";
 
-import { getAllBooks, getAuthors, getPublishers, getCategories } from "../../services/bookService";
+// Hooks
+import useBooks from "../../hooks/useBooks";
+import { useModal } from "../../hooks/useModal";
 
 const Books = () => {
-  const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState({ message: "", type: "" });
+  const [isVisible, openModal, closeModal] = useModal();
+  const [filters, setFilters] = useState({ title: "", author: "", category: "", publisher: "" });
+  const [page, setPage] = useState(1);
+
+  const { books, authors, publishers, categories, totalPages, loading, alert, setAlert } = useBooks(filters, page);
 
   const columns = ["Título", "Autor", "Editora", "Categoria", "Quantidade", "Quantidade Disponível", ""];
   const fields = [
@@ -21,92 +29,23 @@ const Books = () => {
     "qtdDisponivel", // Coluna para quantidade disponível
   ];
 
-  const [books, setBooks] = useState([]);
-  const [filters, setFilters] = useState({
-    title: "",
-    author: "",
-    category: "",
-    publisher: "",
-  });
-
-  const [authors, setAuthors] = useState([]);
-  const [publishers, setPublishers] = useState([]);
-  const [categories, setCategories] = useState([]);
-
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-
-  const fetchBooks = async () => {
-    setLoading(true);
-    try {
-      const { data } = await getAllBooks({ ...filters }, page);
-
-      setBooks(data.books);
-      setTotalPages(data.totalPages);
-      setPage(data.currentPage);
-    } catch (error) {
-      setAlert({ message: "Ocorreu um erro ao buscar os dados. Tente novamente", type: "error" });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchFilterData = async () => {
-    const [authorResponse, publisherResponse, categoryResponse] = await Promise.all([
-      getAuthors(),
-      getPublishers(),
-      getCategories(),
-    ]);
-    setAuthors(authorResponse.data);
-    setPublishers(publisherResponse.data);
-    setCategories(categoryResponse.data);
-  };
-
-  useEffect(() => {
-    fetchBooks();
-    fetchFilterData();
-  }, []);
-
-  useEffect(() => {
-    fetchBooks();
-  }, [filters, page]);
-
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSearch = (e) => {
-    setFilters({ ...filters, title: e.target.value });
-  };
-
   const selectFilters = [
-    {
-      name: "author",
-      options: authors,
-      defaultOptionLabel: "Todos os Autores",
-    },
-    {
-      name: "publisher",
-      options: publishers,
-      defaultOptionLabel: "Todas as Editoras",
-    },
-    {
-      name: "category",
-      options: categories,
-      defaultOptionLabel: "Todas as Categorias",
-    },
+    { name: "author", options: authors, defaultOptionLabel: "Todos os Autores" },
+    { name: "publisher", options: publishers, defaultOptionLabel: "Todas as Editoras" },
+    { name: "category", options: categories, defaultOptionLabel: "Todas as Categorias" },
   ];
+
+  const handleFilterChange = (e) => setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   return (
     <div>
       <FiltersBar
         filters={filters}
-        handleSearch={handleSearch}
+        handleSearch={(e) => setFilters({ ...filters, title: e.target.value })}
         handleFilterChange={handleFilterChange}
-        selects={selectFilters}
+        fieldsSelect={selectFilters}
         textButton="Cadastrar Livro"
-        functionButton={() => "teste"}
+        functionButton={openModal}
       />
 
       <div className="bg-white rounded-lg border">
@@ -114,11 +53,11 @@ const Books = () => {
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
               {loading ? (
-                <div className="p-5 text-center">Carregando...</div> // Spinner ou mensagem de carregamento
+                <div className="p-5 text-center">Carregando...</div>
               ) : alert.message ? (
                 <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: "", type: "" })} />
               ) : books.length === 0 ? (
-                <div className="p-5 text-center">Nenhum cliente encontrado</div> // Mensagem se não houver clientes
+                <div className="p-5 text-center">Nenhum cliente encontrado</div>
               ) : (
                 <>
                   <table className="min-w-full divide-y divide-gray-200">
@@ -132,6 +71,16 @@ const Books = () => {
           </div>
         </div>
       </div>
+
+      {isVisible && (
+        <BookModal
+          visible={isVisible}
+          closeModal={closeModal}
+          authors={authors}
+          publishers={publishers}
+          categories={categories}
+        />
+      )}
     </div>
   );
 };

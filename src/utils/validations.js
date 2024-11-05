@@ -29,3 +29,15 @@ export const validateRequiredField = (value, fieldName) => {
   if (!value) return `${fieldName} é obrigatório.`;
   return null;
 };
+
+export const validateISBN = (isbn) => {
+  // Remove caracteres não numéricos para facilitar a validação
+  const digits = isbn.replace(/\D/g, "");
+
+  // Valida ISBN de 10 dígitos ou de 13 dígitos
+  if (digits.length === 10 || digits.length === 13) {
+    return null; // ISBN válido
+  } else {
+    return "ISBN inválido. O ISBN deve ter 10 ou 13 dígitos.";
+  }
+};

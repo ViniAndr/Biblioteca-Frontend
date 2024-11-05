@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-const Button = ({ text, to, variant, size, disabled = false, onClick }) => {
+const Button = ({ text, to, variant, size, disabled = false, onClick, type }) => {
   const navigate = useNavigate();
 
   const sizes = {
@@ -31,7 +31,12 @@ const Button = ({ text, to, variant, size, disabled = false, onClick }) => {
   }
 
   return (
-    <button className={`${disabledClass} ${baseClass}`} onClick={onClick || handleClick} disabled={disabled}>
+    <button
+      className={`${disabledClass} ${baseClass}`}
+      onClick={onClick || handleClick}
+      disabled={disabled}
+      type={type || ""}
+    >
       {disabled ? (
         <span className="flex items-center">
           {/* Imagen do Loading */}
