@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
+
+// Componentes
 import TableHead from "../tables/TableHead";
 import TableBody from "../tables/TableBody";
-import Pagination from "../common/Pagination";
+import FooterTable from "../tables/FooterTable";
 import FiltersBar from "../common/FiltersBar";
 
+// Servicos
 import { getPublishers } from "../../services/bookService";
+
 const Publishers = () => {
   const columns = ["Editora", ""];
   const fields = ["nome"];
@@ -16,6 +20,7 @@ const Publishers = () => {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [itensAmmount, setItensAmmount] = useState(5);
 
   const fetchPublishers = async () => {
     const { data } = await getPublishers({ ...filters }, page);
@@ -26,7 +31,7 @@ const Publishers = () => {
   };
   useEffect(() => {
     fetchPublishers();
-  }, [page, filters]);
+  }, [page, filters, itensAmmount]);
 
   const handleSearch = (e) => {
     setFilters({ ...filters, nome: e.target.value });
@@ -50,7 +55,13 @@ const Publishers = () => {
                 <TableBody data={publishers} fields={fields} view={false} />
               </table>
 
-              <Pagination page={page} setPage={setPage} total={totalPages} />
+              <FooterTable
+                page={page}
+                setPage={setPage}
+                totalPages={totalPages}
+                itemsPerPage={itensAmmount}
+                setItemsPerPage={setItensAmmount}
+              />
             </div>
           </div>
         </div>

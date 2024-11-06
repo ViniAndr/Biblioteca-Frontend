@@ -3,10 +3,9 @@ import { useState } from "react";
 // Componentes
 import TableHead from "../tables/TableHead";
 import TableBody from "../tables/TableBody";
-import Pagination from "../common/Pagination";
 import FiltersBar from "../common/FiltersBar";
-import Alert from "../common/Alert";
 import BookModal from "../modals/BookModal";
+import FooterTable from "../tables/FooterTable";
 
 // Hooks
 import useBooks from "../../hooks/useBooks";
@@ -17,7 +16,8 @@ const Books = () => {
   const [filters, setFilters] = useState({ title: "", author: "", category: "", publisher: "" });
   const [page, setPage] = useState(1);
 
-  const { books, authors, publishers, categories, totalPages, loading, alert, setAlert } = useBooks(filters, page);
+  const { books, setBooks, itensAmmount, setItensAmmount, authors, publishers, categories, totalPages, loading } =
+    useBooks(filters, page);
 
   const columns = ["Título", "Autor", "Editora", "Categoria", "Quantidade", "Quantidade Disponível", ""];
   const fields = [
@@ -64,7 +64,13 @@ const Books = () => {
                     <TableHead columns={columns} />
                     <TableBody data={books} fields={fields} />
                   </table>
-                  <Pagination page={page} setPage={setPage} total={totalPages} />
+                  <FooterTable
+                    page={page}
+                    setPage={setPage}
+                    totalPages={totalPages}
+                    itemsPerPage={itensAmmount}
+                    setItemsPerPage={setItensAmmount}
+                  />
                 </>
               )}
             </div>
@@ -74,11 +80,11 @@ const Books = () => {
 
       {isVisible && (
         <BookModal
-          visible={isVisible}
           closeModal={closeModal}
           authors={authors}
           publishers={publishers}
           categories={categories}
+          bookControll={{ books, setBooks, itensAmmount }}
         />
       )}
     </div>

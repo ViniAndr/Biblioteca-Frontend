@@ -1,9 +1,15 @@
+// Componentes
 import DynamicModal from "../common/DynamicModal";
 
-// Utils
-import { validateISBN } from "../../utils/validations";
+// Contextos
+import { useAlert } from "../../contexts/AlertContext";
 
-const BookModal = ({ closeModal, authors, publishers, categories }) => {
+// Serviços
+import { createBook } from "../../services/bookService";
+
+const BookModal = ({ closeModal, authors, publishers, categories, bookControll }) => {
+  const { showAlert } = useAlert();
+
   const fields = [
     { label: "Título", name: "title", required: true },
     { type: "number", label: "Quantidade de Cópias", name: "numberOfCopies", required: true, max: 999, min: 0 },
@@ -35,8 +41,27 @@ const BookModal = ({ closeModal, authors, publishers, categories }) => {
     },
   ];
 
-  const onSubmit = (formData) => {
-    console.log(formData);
+  // Verifica se há espaço disponivel no limit de itens da tela
+  const isSpaceAvailable = () => {
+    return bookControll.books.length < bookControll.itensAmmount ? true : false;
+  };
+
+  const onSubmit = async (formData) => {
+    formData.availableQuantity = formData.numberOfCopies;
+    try {
+      const book = await createBook(formData);
+      if (!book.error) {
+        showAlert(book.message, "success");
+        if (isSpaceAvailable()) {
+          bookControll.setBooks((prev) => [...prev, book.book]);
+        }
+        closeModal();
+      } else {
+        showAlert(book.message, "error");
+      }
+    } catch (error) {
+      showAlert("Ocorreu um erro ao buscar os dados. Tente novamente", "error");
+    }
   };
 
   return <DynamicModal fields={fields} onSubmit={onSubmit} onClose={closeModal} />;

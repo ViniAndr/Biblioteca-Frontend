@@ -10,12 +10,13 @@ const useBooks = (filters, page) => {
   const [publishers, setPublishers] = useState([]);
   const [categories, setCategories] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [itensAmmount, setItensAmmount] = useState(5);
 
   // Buscar todos os livros
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      const { data } = await getAllBooks(filters, page);
+      const { data } = await getAllBooks(filters, page, itensAmmount);
       setBooks(data.books);
       setTotalPages(data.totalPages);
     } catch (error) {
@@ -44,7 +45,7 @@ const useBooks = (filters, page) => {
   // fazer a busca caso use o filtro ou altere a pagina
   useEffect(() => {
     fetchBooks();
-  }, [filters, page]);
+  }, [filters, page, itensAmmount]);
 
   // fazer a busca ao acessar a pagina pela primeira vez
   useEffect(() => {
@@ -53,6 +54,9 @@ const useBooks = (filters, page) => {
 
   return {
     books,
+    setBooks,
+    itensAmmount,
+    setItensAmmount,
     authors,
     publishers,
     categories,

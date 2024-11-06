@@ -1,7 +1,19 @@
 import api from "./api";
 
-export const getAllBooks = async (params, page) => {
-  let urlBase = `book/all?page=${page}`;
+export const createBook = async (formData) => {
+  try {
+    const response = await api.post("book/create", formData);
+    return response.data;
+  } catch (error) {
+    if (error.response && error.response.status === 400) {
+      return { error: true, message: "Livro já cadastrado, verifique o ISBN" };
+    }
+    return { error: true, message: "Erro inesperado. Por favor, tente novamente." };
+  }
+};
+
+export const getAllBooks = async (params, page, limitItems) => {
+  let urlBase = `book/all?page=${page}&limitItems=${limitItems}`;
 
   if (params.title) urlBase += `&title=${params.title}`;
   if (params.author) urlBase += `&author=${params.author}`;

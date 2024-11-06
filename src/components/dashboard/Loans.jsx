@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react";
+
+// Contextos
+import { useAlert } from "../../contexts/AlertContext";
+
+// Componentes
 import TableHead from "../tables/TableHead.jsx";
 import TableRow from "../tables/TableRowLoan.jsx";
-import Pagination from "../common/Pagination.jsx";
+import FooterTable from "../tables/FooterTable";
 import FiltersBar from "../common/FiltersBar";
-import Alert from "../common/Alert";
 
+// Servicos
 import { getAllLoans, getClientsFromLoans } from "../../services/loanService.js";
 
 const Loans = () => {
+  const { showAlert } = useAlert();
   const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState({ message: "", type: "" });
 
   const columns = ["Cliente", "Livro", "Data de Empréstimo", "Data de Devolução", "Status", ""];
 
@@ -25,6 +30,7 @@ const Loans = () => {
 
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [itensAmmount, setItensAmmount] = useState(5);
 
   const fetchLoans = async () => {
     setLoading(true);
@@ -35,7 +41,7 @@ const Loans = () => {
       setTotalPages(data.totalPages);
       setPage(data.currentPage);
     } catch (error) {
-      setAlert({ message: "Ocorreu um erro ao buscar os dados. Tente novamente", type: "error" });
+      showAlert("Ocorreu um erro ao buscar os dados. Tente novamente", "error");
     } finally {
       setLoading(false);
     }
@@ -59,7 +65,7 @@ const Loans = () => {
 
   useEffect(() => {
     fetchLoans();
-  }, [filters, page]);
+  }, [filters, page, itensAmmount]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -100,8 +106,6 @@ const Loans = () => {
             <div className="overflow-hidden border-b border-gray-200 shadow sm:rounded-lg">
               {loading ? (
                 <div className="p-5 text-center">Carregando...</div> // Spinner ou mensagem de carregamento
-              ) : alert.message ? (
-                <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: "", type: "" })} />
               ) : loans.length === 0 ? (
                 <div className="p-5 text-center">Nenhum cliente encontrado</div> // Mensagem se não houver clientes
               ) : (
@@ -114,7 +118,13 @@ const Loans = () => {
                       ))}
                     </tbody>
                   </table>
-                  <Pagination page={page} setPage={setPage} total={totalPages} />
+                  <FooterTable
+                    page={page}
+                    setPage={setPage}
+                    totalPages={totalPages}
+                    itemsPerPage={itensAmmount}
+                    setItemsPerPage={setItensAmmount}
+                  />
                 </>
               )}
             </div>

@@ -15,7 +15,7 @@ const Pagination = ({ page, setPage, total }) => {
   };
 
   return (
-    <div className="flex justify-center gap-8 items-center p-2 border-t bg-gray-50">
+    <div className="flex gap-8 items-center">
       <ButtonIcon icon={<MdKeyboardDoubleArrowLeft />} onClick={handlePreviousPage} disabled={page === 1} />
       <span>
         Página {page} de {total}
