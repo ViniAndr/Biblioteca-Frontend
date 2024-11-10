@@ -1,30 +1,43 @@
 import { useState, useEffect } from "react";
-import { getAllBooks, getAuthors, getPublishers, getCategories } from "../services/bookService";
 
-const useBooks = (filters, page) => {
+// Contextos
+import { useAlert } from "../contexts/AlertContext";
+
+// Servicos
+import { getAllBooks, getAuthors, getPublishers, getCategories, createBook } from "../services/bookService";
+
+export const useBooks = () => {
+  const { showAlert } = useAlert();
   const [loading, setLoading] = useState(true);
-  const [alert, setAlert] = useState({ message: "", type: "" });
 
   const [books, setBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
   const [publishers, setPublishers] = useState([]);
   const [categories, setCategories] = useState([]);
+
+  const [filters, setFilters] = useState({ title: "", author: "", category: "", publisher: "" });
+  const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [itensAmmount, setItensAmmount] = useState(5);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   // Buscar todos os livros
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      const { data } = await getAllBooks(filters, page, itensAmmount);
-      setBooks(data.books);
+      const { data } = await getAllBooks(filters, page, itemsPerPage);
+      setBooks(data.books || []);
       setTotalPages(data.totalPages);
     } catch (error) {
-      setAlert({ message: "Erro ao buscar dados. Tente novamente.", type: "error" });
+      showAlert("Erro ao buscar dados. Tente novamente.", "error");
     } finally {
       setLoading(false);
     }
   };
+
+  // fazer a busca caso use o filtro ou altere a pagina
+  useEffect(() => {
+    fetchBooks();
+  }, [filters, page, itemsPerPage]);
 
   // Buscar todos os dados para o filtro funcionar
   const fetchBookAttributes = async () => {
@@ -38,33 +51,57 @@ const useBooks = (filters, page) => {
       setPublishers(publisherResponse.data);
       setCategories(categoryResponse.data);
     } catch (error) {
-      setAlert({ message: "Erro ao carregar filtros.", type: "error" });
+      showAlert("Erro ao carregar filtros.", "error");
     }
   };
-
-  // fazer a busca caso use o filtro ou altere a pagina
-  useEffect(() => {
-    fetchBooks();
-  }, [filters, page, itensAmmount]);
 
   // fazer a busca ao acessar a pagina pela primeira vez
   useEffect(() => {
     fetchBookAttributes();
   }, []);
 
+  // Verifica se há espaço disponivel no limit de itens da tela
+  const isSpaceAvailable = () => {
+    return books.length < itemsPerPage ? true : false;
+  };
+
+  const handleBookCreation = async (formData) => {
+    setLoading(true);
+    try {
+      const newBook = await createBook(formData);
+      if (newBook.error) {
+        return showAlert(newBook.message, "error");
+      }
+
+      showAlert(newBook.message, "success");
+      if (isSpaceAvailable()) {
+        setBooks((prevBooks) => [...prevBooks, newBook.book]);
+        // Esses retornos são para informa o BookModal se fecha o Modal
+        return true;
+      } else {
+        setPage((pages) => pages + 1);
+        return true;
+      }
+    } catch (error) {
+      showAlert("Erro inesperado. Por favor, tente novamente.", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     books,
-    setBooks,
-    itensAmmount,
-    setItensAmmount,
+    filters,
+    setFilters,
+    page,
+    setPage,
+    itemsPerPage,
+    setItemsPerPage,
     authors,
     publishers,
     categories,
     totalPages,
     loading,
-    alert,
-    setAlert,
+    handleBookCreation,
   };
 };
-
-export default useBooks;

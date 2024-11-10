@@ -6,7 +6,7 @@ import Badge from "../common/Badge";
 import Button from "../common/Button";
 
 // Service
-import { cancelLoan } from "../../services/client";
+import { cancelLoan } from "../../services/clientService";
 
 const TableRow = ({ loan, updateLoanStatus }) => {
   const { user } = useAuth();

@@ -7,7 +7,12 @@ import TableHead from "../../components/tables/TableHead";
 import TableRowLoan from "../../components/tables/TableRowLoan";
 import Alert from "../../components/common/Alert";
 
-import { getClientProfile, getClientLoans, updateClientProfile, updateClientAddress } from "../../services/client";
+import {
+  getClientProfile,
+  getClientLoans,
+  updateClientProfile,
+  updateClientAddress,
+} from "../../services/clientService";
 
 export default function ProfileClient() {
   const columns = ["Nome do Livro", "Data de Solicitação", "Data de Devolução", "Status", ""];

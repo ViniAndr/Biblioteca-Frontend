@@ -6,7 +6,7 @@ const Alert = ({ message, type, onClose }) => {
     error: "bg-red-100 border-red-400 text-red-700",
   };
 
-  const duration = 5000;
+  const duration = 3000;
 
   useEffect(() => {
     const timer = setTimeout(() => {

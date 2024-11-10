@@ -1,15 +1,7 @@
 // Componentes
 import DynamicModal from "../common/DynamicModal";
 
-// Contextos
-import { useAlert } from "../../contexts/AlertContext";
-
-// Serviços
-import { createBook } from "../../services/bookService";
-
-const BookModal = ({ closeModal, authors, publishers, categories, bookControll }) => {
-  const { showAlert } = useAlert();
-
+const BookModal = ({ closeModal, authors, publishers, categories, handleBookCreation }) => {
   const fields = [
     { label: "Título", name: "title", required: true },
     { type: "number", label: "Quantidade de Cópias", name: "numberOfCopies", required: true, max: 999, min: 0 },
@@ -41,27 +33,11 @@ const BookModal = ({ closeModal, authors, publishers, categories, bookControll }
     },
   ];
 
-  // Verifica se há espaço disponivel no limit de itens da tela
-  const isSpaceAvailable = () => {
-    return bookControll.books.length < bookControll.itensAmmount ? true : false;
-  };
-
   const onSubmit = async (formData) => {
     formData.availableQuantity = formData.numberOfCopies;
-    try {
-      const book = await createBook(formData);
-      if (!book.error) {
-        showAlert(book.message, "success");
-        if (isSpaceAvailable()) {
-          bookControll.setBooks((prev) => [...prev, book.book]);
-        }
-        closeModal();
-      } else {
-        showAlert(book.message, "error");
-      }
-    } catch (error) {
-      showAlert("Ocorreu um erro ao buscar os dados. Tente novamente", "error");
-    }
+    const isCreate = Boolean(await handleBookCreation(formData));
+    // se criar com sucesso fecha o modal
+    if (isCreate) closeModal();
   };
 
   return <DynamicModal fields={fields} onSubmit={onSubmit} onClose={closeModal} />;

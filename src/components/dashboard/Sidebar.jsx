@@ -36,7 +36,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
   };
 
   return (
-    <aside className="w-64 bg-zinc-800 text-white p-4 flex flex-col h-full">
+    <aside className="fixed w-64 bg-zinc-800 text-white p-4 flex flex-col h-full">
       <h1 className="text-2xl font-bold mb-8 text-center">Biblioteca</h1>
       <nav className="flex-grow">
         <ul className="space-y-2">

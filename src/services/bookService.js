@@ -3,7 +3,7 @@ import api from "./api";
 export const createBook = async (formData) => {
   try {
     const response = await api.post("book/create", formData);
-    return response.data;
+    return { message: "O livro foi adicionado com sucesso.", book: response.data.book };
   } catch (error) {
     if (error.response && error.response.status === 400) {
       return { error: true, message: "Livro já cadastrado, verifique o ISBN" };
@@ -12,8 +12,8 @@ export const createBook = async (formData) => {
   }
 };
 
-export const getAllBooks = async (params, page, limitItems) => {
-  let urlBase = `book/all?page=${page}&limitItems=${limitItems}`;
+export const getAllBooks = async (params, page, itemsPerPage) => {
+  let urlBase = `book/all?page=${page}&itemsPerPage=${itemsPerPage}`;
 
   if (params.title) urlBase += `&title=${params.title}`;
   if (params.author) urlBase += `&author=${params.author}`;

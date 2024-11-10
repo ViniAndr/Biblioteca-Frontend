@@ -25,12 +25,14 @@ const DynamicModal = ({ onClose, onSubmit, fields, title = "Formulário" }) => {
 
   // Validação focada apenas no ISBN Por enquanto
   const validationForm = () => {
-    const isbn = validateISBN(formData["isbn"]);
-    if (isbn) {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        isbn: isbn,
-      }));
+    if (title === "Livro") {
+      const isbn = validateISBN(formData["isbn"]);
+      if (isbn) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          isbn: isbn,
+        }));
+      }
     }
   };
 

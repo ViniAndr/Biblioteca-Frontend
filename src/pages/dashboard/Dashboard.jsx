@@ -35,9 +35,9 @@ const Dashboard = () => {
   return (
     <div className="h-screen flex">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div className="lg:container mx-auto p-6">
+      <div className="pl-64 lg:container mx-auto p-6">
         <h1 className="font-bold text-4xl mb-2">{activeTab}</h1>
-        <main className="flex-1 overflow-auto">{renderContent()}</main>
+        <main className="flex-1 overflow-auto pb-6">{renderContent()}</main>
       </div>
     </div>
   );

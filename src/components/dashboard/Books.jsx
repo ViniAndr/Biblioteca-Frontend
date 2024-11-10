@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 // Componentes
 import TableHead from "../tables/TableHead";
 import TableBody from "../tables/TableBody";
@@ -8,16 +6,27 @@ import BookModal from "../modals/BookModal";
 import FooterTable from "../tables/FooterTable";
 
 // Hooks
-import useBooks from "../../hooks/useBooks";
+import { useBooks } from "../../hooks/useBooks";
 import { useModal } from "../../hooks/useModal";
 
 const Books = () => {
   const [isVisible, openModal, closeModal] = useModal();
-  const [filters, setFilters] = useState({ title: "", author: "", category: "", publisher: "" });
-  const [page, setPage] = useState(1);
 
-  const { books, setBooks, itensAmmount, setItensAmmount, authors, publishers, categories, totalPages, loading } =
-    useBooks(filters, page);
+  const {
+    books,
+    filters,
+    setFilters,
+    page,
+    setPage,
+    itemsPerPage,
+    setItemsPerPage,
+    authors,
+    publishers,
+    categories,
+    totalPages,
+    loading,
+    handleBookCreation,
+  } = useBooks();
 
   const columns = ["Título", "Autor", "Editora", "Categoria", "Quantidade", "Quantidade Disponível", ""];
   const fields = [
@@ -36,12 +45,13 @@ const Books = () => {
   ];
 
   const handleFilterChange = (e) => setFilters((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleSearch = (e) => setFilters({ ...filters, title: e.target.value });
 
   return (
     <div>
       <FiltersBar
         filters={filters}
-        handleSearch={(e) => setFilters({ ...filters, title: e.target.value })}
+        handleSearch={handleSearch}
         handleFilterChange={handleFilterChange}
         fieldsSelect={selectFilters}
         textButton="Cadastrar Livro"
@@ -68,8 +78,8 @@ const Books = () => {
                     page={page}
                     setPage={setPage}
                     totalPages={totalPages}
-                    itemsPerPage={itensAmmount}
-                    setItemsPerPage={setItensAmmount}
+                    itemsPerPage={itemsPerPage}
+                    setItemsPerPage={setItemsPerPage}
                   />
                 </>
               )}
@@ -84,7 +94,7 @@ const Books = () => {
           authors={authors}
           publishers={publishers}
           categories={categories}
-          bookControll={{ books, setBooks, itensAmmount }}
+          handleBookCreation={handleBookCreation}
         />
       )}
     </div>

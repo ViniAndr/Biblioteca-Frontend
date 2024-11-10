@@ -1,5 +1,18 @@
 import api from "./api";
 
+export const createSimpleClient = async (formData) => {
+  try {
+    const response = await api.post("client/create/simple", formData);
+    console.log("sERVICE: ", response.data);
+    return { message: "O Cliente foi cadastrado com sucesso.", client: response.data.client };
+  } catch (error) {
+    if (error.response && error.response.status === 400) {
+      return { error: true, message: "Esse Cliente já tem cadastro ativo." };
+    }
+    return { error: true, message: "Erro inesperado. Por favor, tente novamente." };
+  }
+};
+
 export const getClientProfile = async () => {
   try {
     const response = await api.get("/client/profile");
@@ -59,8 +72,8 @@ export const updateClientAddress = async (data) => {
   }
 };
 
-export const getAllClients = async (params, page) => {
-  let urlBase = page ? `client/all?page=${page}` : "client/all";
+export const getAllClients = async (params, page, itemsPerPage) => {
+  let urlBase = `client/all?page=${page}&itemsPerPage=${itemsPerPage}`;
   if (params && params.nome) urlBase += `&nome=${params.nome}`;
 
   try {
